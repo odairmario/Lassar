@@ -1,0 +1,6 @@
+[submodule "lassar-frontend"]
+	path = lassar-frontend
+	url = git@github.com:odairmario/lassar-frontend.git
+[submodule "lassar-api"]
+	path = lassar-api
+	url = git@github.com:odairmario/lassar-api.git
