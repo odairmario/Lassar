@@ -1,0 +1,52 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  redis:
+    restart: on-failure
+    image: redis
+  database:
+    restart: on-failure
+    image: postgres
+    volumes:
+      - ./database:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PORT=${DB_PORT}
+
+
+  django:
+    build: .
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    links:
+      - "redis:redis"
+      - "database:database"
+    depends_on:
+      - database
+    volumes:
+      - ./lassar-api:/home/app/bbbrecord_api
+      - ${BBB_RECORDS_DIR:-/var/bigbluebutton/published/presentation/}:/bbb/:ro
+      - media:/home/app/media
+
+  celery:
+    restart: on-failure
+    build:
+      context: .
+    volumes:
+      - ./lassar-api:/home/app/bbbrecord_api
+      - ${BBB_RECORDS_DIR:-/var/bigbluebutton/published/presentation/}:/bbb/:ro
+      - ./media:/home/app/media
+    environment:
+      - CELERY_WORKER=True
+    security_opt:
+      - seccomp:"./lassar-api/bbb-video-download/chrome.json"
+    depends_on:
+      - database
+      - redis
+      - web
+
+volumes:
+  media:
+
