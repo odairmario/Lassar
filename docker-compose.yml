@@ -1,4 +1,4 @@
-version: "3.9"  # optional since v1.27.0
+version: "3.7"  # optional since v1.27.0
 services:
   redis:
     restart: on-failure
@@ -45,7 +45,7 @@ services:
     depends_on:
       - database
       - redis
-      - web
+      - django
 
 volumes:
   media:
