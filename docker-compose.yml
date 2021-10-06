@@ -16,7 +16,7 @@ services:
 
 
   django:
-    build: .
+    build: ./lassar-api/
     restart: on-failure
     ports:
       - "8000:8000"
@@ -26,17 +26,16 @@ services:
     depends_on:
       - database
     volumes:
-      - ./lassar-api:/home/app/bbbrecord_api
-      - ${BBB_RECORDS_DIR:-/var/bigbluebutton/published/presentation/}:/bbb/:ro
+      - ./lassar-api:/home/app/lassar-api
+      - /var/bigbluebutton/published/presentation/:/bbb/:ro
       - media:/home/app/media
 
   celery:
     restart: on-failure
-    build:
-      context: .
+    build: ./lassar-api
     volumes:
-      - ./lassar-api:/home/app/bbbrecord_api
-      - ${BBB_RECORDS_DIR:-/var/bigbluebutton/published/presentation/}:/bbb/:ro
+      - ./lassar-api:/home/app/lassar-api
+      - /var/bigbluebutton/published/presentation/:/bbb/:ro
       - ./media:/home/app/media
     environment:
       - CELERY_WORKER=True
